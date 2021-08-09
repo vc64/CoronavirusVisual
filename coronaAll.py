@@ -1,10 +1,10 @@
-
 import re
 import requests
 
 import plotly
 import plotly.graph_objects as go
 
+import datetime
 from datetime import date, timedelta
 
 import plotly.express as px
@@ -15,20 +15,29 @@ import plotly.express as px
 
 linkall = []
 
-datalink = "https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_daily_reports"
-datareq = requests.get(datalink)
+# datalink = "https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_daily_reports"
+# datareq = requests.get(datalink)
 
-htmldata = datareq.text
+# htmldata = datareq.text
 
-htmlpattern = re.compile("<a class=\"js-navigation-open \" [^>]+")
+# htmlpattern = re.compile("<a class=\"js-navigation-open \" [^>]+")
 
-appearances = htmlpattern.findall(htmldata)
+# appearances = htmlpattern.findall(htmldata)
 
-for u in appearances[1:-1]:
-    rawurl = u.split(" ")[5]
-    url = "https://raw.githubusercontent.com" + rawurl[6:31] + rawurl[36:-1]
+# for u in appearances[1:-1]:
+#     rawurl = u.split(" ")[5]
+#     url = "https://raw.githubusercontent.com" + rawurl[6:31] + rawurl[36:-1]
+#     linkall.append(url)
+
+dayrange = (date.today() - date(2020, 1, 22)).days
+
+day = date(2020, 1, 22)
+
+for d in range(0, dayrange):
+    daystr = day.strftime("%m-%d-%Y")
+    url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/" + daystr + ".csv"
     linkall.append(url)
-
+    day += datetime.timedelta(days=1)
 
 # Gets data from january 22 to march 9
 
@@ -154,7 +163,7 @@ for d in range(len(linkall)-1):
 
 #print(datescale)
 
-alldata["NY"][0] = [x//10 for x in alldata["NY"][0]]
+# alldata["NY"][0] = [x//10 for x in alldata["NY"][0]]
 #alldata["New York"][1] = [x//5 for x in alldata["New York"][1]]
 
 
@@ -310,7 +319,7 @@ figI = go.Figure(
             type="buttons",
             buttons=[dict(label="Play",
                           method="animate",
-                          args=[None, {"frame": {"duration": 700, "redraw": True}, 'transition': {'duration': 700}}])])]
+                          args=[None, {"frame": {"duration": 100, "redraw": True}, 'transition': {'duration': 100}}])])]
     ),
 )
 
@@ -351,8 +360,8 @@ figI.update_layout(annotations=[
 """
 
 #figD.update(frames = framd)
-
-figI.show()
+figI.write_html("coronaAug.html", auto_open = True)
+# figI.show()
 #figD.show()
 
 #fig =px.scatter(x=range(10), y=range(10))
