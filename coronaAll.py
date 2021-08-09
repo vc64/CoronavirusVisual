@@ -15,19 +15,6 @@ import plotly.express as px
 
 linkall = []
 
-# datalink = "https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_daily_reports"
-# datareq = requests.get(datalink)
-
-# htmldata = datareq.text
-
-# htmlpattern = re.compile("<a class=\"js-navigation-open \" [^>]+")
-
-# appearances = htmlpattern.findall(htmldata)
-
-# for u in appearances[1:-1]:
-#     rawurl = u.split(" ")[5]
-#     url = "https://raw.githubusercontent.com" + rawurl[6:31] + rawurl[36:-1]
-#     linkall.append(url)
 
 dayrange = (date.today() - date(2020, 1, 22)).days
 
@@ -39,8 +26,8 @@ for d in range(0, dayrange):
     linkall.append(url)
     day += datetime.timedelta(days=1)
 
-# Gets data from january 22 to march 9
 
+# Gets data from january 22 to march 9 (due to different formats)
 
 def getCorona(state):
     infect = []
@@ -68,7 +55,7 @@ def getCorona(state):
     return(infect, death)
 
 
-# Gets data from march 10 to march 21
+# Gets data from march 10 to march 21 (due to different formats)
 
 def getData1(state):
     infect = []
@@ -141,7 +128,7 @@ for name,abbr in statesdict.items():
 
     alldata[abbr] = [datapt1[0] + datapt2[0] + datapt3[0], datapt1[1] + datapt2[1] + datapt3[1]]
     if abbr == "NY":
-      maxinfected.append(max(alldata[abbr][0])/10)
+      maxinfected.append(max(alldata[abbr][0]))
     else:
       maxinfected.append(max(alldata[abbr][0]))
     maxdead.append(max(alldata[abbr][1]))
@@ -150,10 +137,6 @@ for name,abbr in statesdict.items():
 fram = []
 framd = []
 
-#scalemax = 0
-
-#print(alldata)
-
 
 datescale = [date(2020, 1, 22)]
 
@@ -161,10 +144,6 @@ datescale = [date(2020, 1, 22)]
 for d in range(len(linkall)-1):
   datescale.append(datescale[-1] + timedelta(days=1))
 
-#print(datescale)
-
-# alldata["NY"][0] = [x//10 for x in alldata["NY"][0]]
-#alldata["New York"][1] = [x//5 for x in alldata["New York"][1]]
 
 
 for x in range(0, len(linkall)-40):
@@ -278,24 +257,13 @@ for x in range(0, len(linkall)-40):
             bgcolor="#9467bd")]}))
   #framd.append(go.Frame(data=allstatesD, traces=list(range(len(allstates)))))
 
-# shorten legend
-# text color in annotations
-# box color in annotations
-# add descriptions maybe
-
-
 
 
 dayscale = len(list(alldata.values())[0][0]) - 32
 
 
-print(maxinfected)
-
 ymax = int(max(maxinfected) * 1.1)
 ymaxD = int(max(maxdead) * 1.1)
-
-
-#fig = make_subplots(rows=1, cols=2)
 
 
 
@@ -324,46 +292,16 @@ figI = go.Figure(
 )
 
 
-'''
-figD = go.Figure(
-    data=[go.Scatter(x=datescale[40:42], y=[0, 0]), go.Scatter(x=datescale[40:42], y=[0, 0]), go.Scatter(x=datescale[40:42], y=[0, 0]), go.Scatter(x=datescale[40:42], y=[0, 0])],
-    layout=go.Layout(
-        xaxis=dict(range=[datescale[40], datescale[-1]], autorange=False, title="Date"),
-        yaxis=dict(range=[0, ymaxD], title="People Infected by the Coronavirus"),
-        title="Start Title",
-        updatemenus=[dict(
-            type="buttons",
-            buttons=[dict(label="Play",
-                          method="animate",
-                          args=[None, {"frame": {"duration": 700, "redraw": True}, 'transition': {'duration': 700}}])])]
-    ),
-)
-'''
+
 
 
 
 figI.update(frames = fram)
-"""
-figI.update_layout(annotations=[
-        dict(
-            x=datetime(2020, 1, 22),
-            y=21,
-            xref="x",
-            yref="y",
-            text="dict Text",
-            showarrow=True,
-            arrowhead=7,
-            ax=0,
-            ay=-40
-        )
-    ])
-"""
 
-#figD.update(frames = framd)
+
+
 figI.write_html("coronaAug.html", auto_open = True)
 # figI.show()
-#figD.show()
 
-#fig =px.scatter(x=range(10), y=range(10))
 
 
