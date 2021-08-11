@@ -132,7 +132,7 @@ for name,abbr in statesdict.items():
 
 # plotting and animating the data with matplotlib
 
-fig, (axI, axD) = plt.subplots(1, 2, figsize = (8, 6))
+fig, (axI, axD) = plt.subplots(1, 2, figsize = (10, 6))
 
 plt.style.use("default")
 # fig.set_facecolor("w")
@@ -148,8 +148,7 @@ axD.xaxis.set_major_formatter(mdates.DateFormatter('%m-%Y'))
 dates = mdates.date2num(datescale)
 fig.tight_layout(pad=3.0)
 plt.gcf().autofmt_xdate()
-axD = fig.add_axes([0.1, 0.1, 0.6, 0.75])
-# plt.figure(num=1, figsize=(30, 30))
+fig.subplots_adjust(right=0.8)
 
 linesI = []
 linesD = []
@@ -198,12 +197,11 @@ axD.set_xlim(dates[0], dates[-1])
 axI.set_ylabel("Infected")
 axD.set_ylabel("Deaths")
 fig.suptitle("Infections and Deaths from COVID-19 in the United States")
-plt.legend(linesI, list(statesdict.keys()), loc = "center left", bbox_to_anchor = (1, 0.8))
+plt.legend(linesI, list(statesdict.values()), loc = "center left", bbox_to_anchor = (1, 0.8))
 
 # plt.show()
 
+# saves animation as gif
 anim = animation.FuncAnimation(fig, animate, frames=len(alldata["MA"][0]), interval=20, blit=True, repeat=False)
-
-
 
 anim.save("coronaAug2021.gif", writer='Pillow')
